@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Coração Interativo</title>
+    <title>Coração e Código</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
         body, html {
             margin: 0;
             padding: 0;
@@ -15,62 +18,216 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            font-family: monospace;
+        }
+        .container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+        .heart-container {
+            flex: 1;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
         }
         canvas {
             display: block;
         }
+        .code-window {
+            width: 400px;
+            height: 85vh;
+            background-color: #121212;
+            border-radius: 8px;
+            border: 1px solid #333;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+        .code-header {
+            background-color: #1a1a1a;
+            padding: 10px 15px;
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            border-bottom: 1px solid #333;
+        }
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        .dot-red { background-color: #ff5f56; }
+        .dot-yellow { background-color: #ffbd2e; }
+        .dot-green { background-color: #27c93f; }
+        .code-content {
+            padding: 15px;
+            color: #9cdcfe;
+            font-size: 11px;
+            line-height: 1.4;
+            overflow-y: auto;
+            white-space: pre;
+            flex: 1;
+        }
+        .kw { color: #c586c0; }
+        .fn { color: #dcdcaa; }
+        .str { color: #ce9178; }
+        .num { color: #b5cea8; }
+
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+            }
+            .code-window {
+                display: none; /* No telemóvel foca-se na animação para ficar perfeito */
+            }
+        }
     </style>
 </head>
 <body>
-    <canvas id="heartCanvas"></canvas>
+    <div class="container">
+        <div class="heart-container">
+            <canvas id="heartCanvas"></canvas>
+        </div>
+        <div class="code-window">
+            <div class="code-header">
+                <span class="dot dot-red"></span>
+                <span class="dot dot-yellow"></span>
+                <span class="dot dot-green"></span>
+            </div>
+            <div class="code-content"><span class="kw">import</span> turtle <span class="kw">as</span> t, math <span class="kw">as</span> m, random <span class="kw">as</span> r, time
+
+s = t.Screen()
+s.setup(<span class="num">700</span>, <span class="num">700</span>)
+s.bgcolor(<span class="str">"black"</span>)
+s.tracer(<span class="num">0</span>)
+p = t.Turtle()
+p.hideturtle()
+
+<span class="kw">def</span> <span class="fn">heart</span>(a, scale):
+    x = <span class="num">16</span> * (m.sin(a)**<span class="num">3</span>) * scale
+    y = (<span class="num">13</span> * m.cos(a) - <span class="num">5</span> * m.cos(<span class="num">2</span>*a) - 
+         <span class="num">2</span> * m.cos(<span class="num">3</span>*a) - m.cos(<span class="num">4</span>*a)) * scale
+    <span class="kw">return</span> x, y
+
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">10000</span>):
+    a = r.uniform(<span class="num">0</span>, <span class="num">2</span> * m.pi)
+    sc = r.uniform(<span class="num">0.5</span>, <span class="num">15.5</span>)
+    x, y = heart(a, sc)
+    ang = m.atan2(y, x) + r.uniform(-<span class="num">0.3</span>, <span class="num">0.3</span>)
+    length = r.uniform(<span class="num">4</span>, <span class="num">14</span>)
+    p.pencolor(<span class="num">1.0</span>, r.uniform(<span class="num">0.25</span>, <span class="num">0.50</span>), r.uniform(<span class="num">0.60</span>, <span class="num">0.85</span>))
+    p.width(r.uniform(<span class="num">0.5</span>, <span class="num">1.2</span>))
+    p.penup()
+    p.goto(x, y)
+    p.pendown()
+    p.goto(x + length * m.cos(ang), y + length * m.sin(ang))
+    <span class="kw">if</span> i % <span class="num">200</span> == <span class="num">0</span>: s.update()
+    time.sleep(<span class="num">0.002</span>)
+
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">3500</span>):
+    a = r.uniform(<span class="num">0</span>, <span class="num">2</span> * m.pi)
+    x, y = heart(a, <span class="num">10.0</span>)
+    ang = m.atan2(y, x) + r.uniform(-<span class="num">0.35</span>, <span class="num">0.35</span>)
+    length = r.uniform(<span class="num">10</span>, <span class="num">32</span>)
+    p.pencolor(<span class="num">0</span>, r.uniform(<span class="num">0.45</span>, <span class="num">0.75</span>), r.uniform(<span class="num">0.75</span>, <span class="num">0.95</span>))
+    p.width(r.uniform(<span class="num">0.4</span>, <span class="num">0.9</span>))
+    p.penup()
+    p.goto(x + r.uniform(-<span class="num">2</span>, <span class="num">2</span>), y + r.uniform(-<span class="num">2</span>, <span class="num">2</span>))
+    p.pendown()
+    p.goto(x + length * m.cos(ang), y + length * m.sin(ang))
+    <span class="kw">if</span> i % <span class="num">150</span> == <span class="num">0</span>: s.update()
+    time.sleep(<span class="num">0.002</span>)
+
+s.update()
+t.done()</div>
+        </div>
+    </div>
 
     <script>
         const canvas = document.getElementById('heartCanvas');
         const ctx = canvas.getContext('2d');
 
         function resize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
         }
         window.addEventListener('resize', resize);
         resize();
 
-        // Gerar partículas do coração
-        const particles = [];
-        for (let i = 0; i < 1200; i++) {
-            const t = Math.random() * Math.PI * 2;
-            // Equação paramétrica do coração
-            const x = 16 * Math.pow(Math.sin(t), 3);
-            const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+        function heart(a, scale) {
+            const x = 16 * Math.pow(Math.sin(a), 3) * scale;
+            const y = (13 * Math.cos(a) - 5 * Math.cos(2*a) - 2 * Math.cos(3*a) - Math.cos(4*a)) * scale;
+            return { x, y };
+        }
+
+        function random(min, max) {
+            return min + Math.random() * (max - min);
+        }
+
+        const lines = [];
+
+        for (let i = 0; i < 4000; i++) {
+            const a = random(0, 2 * Math.PI);
+            const sc = random(0.5, 14.0);
+            const h = heart(a, sc);
+            const ang = Math.atan2(h.y, h.x) + random(-0.3, 0.3);
+            const length = random(4, 14);
             
-            particles.push({
-                x: x,
-                y: y,
-                size: Math.random() * 2 + 1,
-                color: `hsl(${Math.random() * 40 + 320}, 100%, 70%)` // Tons de rosa e magenta vibrantes
+            lines.push({
+                x1: h.x,
+                y1: h.y,
+                x2: h.x + length * Math.cos(ang),
+                y2: h.y + length * Math.sin(ang),
+                color: `rgba(255, ${Math.floor(random(65, 128))}, ${Math.floor(random(153, 217)}}, 0.8)`,
+                width: random(0.5, 1.2)
+            });
+        }
+
+        for (let i = 0; i < 1500; i++) {
+            const a = random(0, 2 * Math.PI);
+            const h = heart(a, 9.0);
+            const ang = Math.atan2(h.y, h.x) + random(-0.35, 0.35);
+            const length = random(10, 28);
+            
+            lines.push({
+                x1: h.x + random(-2, 2),
+                y1: h.y + random(-2, 2),
+                x2: h.x + length * Math.cos(ang),
+                y2: h.y + length * Math.sin(ang),
+                color: `rgba(0, ${Math.floor(random(115, 191))}, ${Math.floor(random(191, 242)}}, 0.8)`,
+                width: random(0.4, 0.9)
             });
         }
 
         function draw() {
-            // Fundo semi-transparente para criar efeito de rasto suave
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+            ctx.fillStyle = '#000';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             ctx.save();
             ctx.translate(canvas.width / 2, canvas.height / 2);
+            
+            const baseScale = Math.min(canvas.width, canvas.height) / 450;
+            ctx.scale(baseScale, -baseScale);
 
-            // Ajustar escala com base no tamanho da tela do telemóvel
-            const scale = Math.min(canvas.width, canvas.height) / 35;
-
-            particles.forEach(p => {
-                ctx.fillStyle = p.color;
+            lines.forEach(l => {
                 ctx.beginPath();
-                ctx.arc(p.x * scale, p.y * scale, p.size, 0, Math.PI * 2);
-                ctx.fill();
+                ctx.strokeStyle = l.color;
+                ctx.lineWidth = l.width;
+                ctx.moveTo(l.x1, l.y1);
+                ctx.lineTo(l.x2, l.y2);
+                ctx.stroke();
             });
 
             ctx.restore();
-            requestAnimationFrame(draw);
         }
 
         draw();
